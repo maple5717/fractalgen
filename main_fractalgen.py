@@ -155,28 +155,29 @@ def main(args):
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
 
-    dataset_train = datasets.ImageFolder(os.path.join(args.data_path, 'train'), transform=transform_train)
-    dataset_val = datasets.ImageFolder(os.path.join(args.data_path, 'val'), transform=transform_val)
+    if not args.evaluate_gen:
+        dataset_train = datasets.ImageFolder(os.path.join(args.data_path, 'train'), transform=transform_train)
+        dataset_val = datasets.ImageFolder(os.path.join(args.data_path, 'val'), transform=transform_val)
 
-    sampler_train = torch.utils.data.DistributedSampler(
-        dataset_train, num_replicas=num_tasks, rank=global_rank, shuffle=True
-    )
-    print("Sampler_train =", sampler_train)
+        sampler_train = torch.utils.data.DistributedSampler(
+            dataset_train, num_replicas=num_tasks, rank=global_rank, shuffle=True
+        )
+        print("Sampler_train =", sampler_train)
 
-    data_loader_train = torch.utils.data.DataLoader(
-        dataset_train, sampler=sampler_train,
-        batch_size=args.batch_size,
-        num_workers=args.num_workers,
-        pin_memory=args.pin_mem,
-        drop_last=True,
-    )
-    data_loader_val = torch.utils.data.DataLoader(
-        dataset_val, shuffle=True,
-        batch_size=args.nll_bsz,
-        num_workers=args.num_workers,
-        pin_memory=args.pin_mem,
-        drop_last=False,
-    )
+        data_loader_train = torch.utils.data.DataLoader(
+            dataset_train, sampler=sampler_train,
+            batch_size=args.batch_size,
+            num_workers=args.num_workers,
+            pin_memory=args.pin_mem,
+            drop_last=True,
+        )
+        data_loader_val = torch.utils.data.DataLoader(
+            dataset_val, shuffle=True,
+            batch_size=args.nll_bsz,
+            num_workers=args.num_workers,
+            pin_memory=args.pin_mem,
+            drop_last=False,
+        )
 
     # Create fractal generative model
     model = fractalgen.__dict__[args.model](
@@ -278,6 +279,7 @@ def main(args):
 
 
 if __name__ == '__main__':
+    torch.cuda.empty_cache()
     args = get_args_parser().parse_args()
     Path(args.output_dir).mkdir(parents=True, exist_ok=True)
     main(args)
