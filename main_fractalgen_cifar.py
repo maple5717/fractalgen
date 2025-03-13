@@ -29,7 +29,7 @@ def get_args_parser():
                         help='Folder that contains checkpoint to resume from')
     parser.add_argument('--start_epoch', default=0, type=int, metavar='N',
                         help='Starting epoch')
-    parser.add_argument('--num_workers', default=10, type=int)
+    parser.add_argument('--num_workers', default=1, type=int)
     parser.add_argument('--pin_mem', action='store_true',
                         help='Pin CPU memory in DataLoader for faster GPU transfers')
     parser.add_argument('--no_pin_mem', action='store_false', dest='pin_mem')
@@ -38,12 +38,12 @@ def get_args_parser():
     # Model parameters
     parser.add_argument('--model', default='fractalmar_in64', type=str, metavar='MODEL',
                         help='Name of the model to train')
-    parser.add_argument('--img_size', default=64, type=int, help='Image size')
+    parser.add_argument('--img_size', default=32, type=int, help='Image size')
 
     # Generation parameters
     parser.add_argument('--num_iter_list', default='64,16', type=str,
                         help='Number of autoregressive iterations for each fractal level')
-    parser.add_argument('--num_images', default=50000, type=int,
+    parser.add_argument('--num_images', default=1000, type=int,
                         help='Number of images to generate')
     parser.add_argument('--cfg', default=1.0, type=float,
                         help='Classifier-free guidance factor')
@@ -53,7 +53,7 @@ def get_args_parser():
     parser.add_argument('--filter_threshold', default=1e-4, type=float,
                         help='Filter threshold for low probability tokens in cfg')
     parser.add_argument('--label_drop_prob', default=0.1, type=float)
-    parser.add_argument('--eval_freq', type=int, default=40,
+    parser.add_argument('--eval_freq', type=int, default=5,
                         help='Frequency (in epochs) for evaluation')
     parser.add_argument('--save_last_freq', type=int, default=5,
                         help='Frequency (in epochs) to save checkpoints')
@@ -81,7 +81,7 @@ def get_args_parser():
                         help='Minimum LR for cyclic schedulers that hit 0')
     parser.add_argument('--lr_schedule', type=str, default='cosine',
                         help='Learning rate schedule')
-    parser.add_argument('--warmup_epochs', type=int, default=40, metavar='N',
+    parser.add_argument('--warmup_epochs', type=int, default=5, metavar='N',
                         help='Epochs to warm up LR')
 
     # Fractal generator parameters
@@ -101,7 +101,7 @@ def get_args_parser():
     # Dataset parameters
     parser.add_argument('--data_path', default='./data/imagenet', type=str,
                         help='Path to the dataset')
-    parser.add_argument('--class_num', default=1000, type=int)
+    parser.add_argument('--class_num', default=10, type=int)
     parser.add_argument('--output_dir', default='./output_dir',
                         help='Directory to save outputs (empty for no saving)')
     parser.add_argument('--device', default='cuda',
