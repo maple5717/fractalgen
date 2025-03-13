@@ -66,7 +66,36 @@ For convenience, our pre-trained models can be downloaded directly here as well:
 ### Demo
 Run our interactive visualization [demo](http://colab.research.google.com/github/LTH14/fractalgen/blob/main/demo/run_fractalgen.ipynb) using Colab notebook!
 
-### Training
+### Training-CIFAR10
+Example script for training FractalAR
+```
+# --master_addr=${MASTER_ADDR} --master_port=${MASTER_PORT} \
+CUDA_VISIBLE_DEVICES=3,5 torchrun --nproc_per_node=2 --nnodes=1 --node_rank=0 main_fractalgen_cifar.py 
+--model fractalar_cifar32 
+--img_size 64 
+--class_num 10
+--num_conds 1 
+--batch_size 64 
+--eval_freq 5 
+--save_last_freq 10 
+--epochs 100 
+--warmup_epochs 5 
+--blr 5.0e-5 
+--weight_decay 0.05 
+--attn_dropout 0.1 --proj_dropout 0.1 
+--lr_schedule cosine 
+--gen_bsz 256 --num_images 8000 
+--num_iter_list 64,16 
+--cfg 11.0 
+--cfg_schedule linear 
+--temperature 1.03 
+--output_dir ./out 
+--resume ./out  
+--grad_checkpointing --online_eval
+
+```
+
+### Training-ImageNet
 The below training scripts have been tested on 4x8 H100 GPUs.
 
 Example script for training FractalAR on ImageNet 64x64 for 800 epochs:
