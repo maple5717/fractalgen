@@ -138,11 +138,33 @@ class FractalGen(nn.Module):
             temperature, filter_threshold, next_level_sample_function, visualize
         )
 
+def fractalar_cifar32_tiny(**kwargs):
+    model = FractalGen(
+        img_size_list=(32, 4, 1),
+        embed_dim_list=(128, 64, 32),
+        num_blocks_list=(16, 4, 3),
+        num_heads_list=(16, 8, 4),
+        generator_type_list=("ar", "ar", "ar"),
+        fractal_level=0,
+        **kwargs)
+    return model
+
+def fractalmar_cifar32_tiny(**kwargs):
+    model = FractalGen(
+        img_size_list=(32, 4, 1),
+        embed_dim_list=(128, 64, 32),
+        num_blocks_list=(16, 4, 3),
+        num_heads_list=(16, 8, 4),
+        generator_type_list=("mar", "mar", "ar"),
+        fractal_level=0,
+        **kwargs)
+    return model
+
 def fractalar_cifar32(**kwargs):
     model = FractalGen(
         img_size_list=(32, 4, 1),
-        embed_dim_list=(256, 128, 64),
-        num_blocks_list=(32, 8, 3),
+        embed_dim_list=(128, 64, 32),
+        num_blocks_list=(16, 4, 3),
         num_heads_list=(16, 8, 4),
         generator_type_list=("ar", "ar", "ar"),
         fractal_level=0,
@@ -152,7 +174,7 @@ def fractalar_cifar32(**kwargs):
 def fractalmar_cifar32(**kwargs):
     model = FractalGen(
         img_size_list=(32, 4, 1),
-        embed_dim_list=(256, 128, 64),
+        embed_dim_list=(1024, 512, 256),
         num_blocks_list=(32, 8, 3),
         num_heads_list=(16, 8, 4),
         generator_type_list=("mar", "mar", "ar"),
