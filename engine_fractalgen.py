@@ -194,27 +194,32 @@ def evaluate(model_without_ddp, args, epoch, batch_size=64, log_writer=None):
         elif args.img_size == 256:
             fid_statistics_file = 'fid_stats/adm_in256_stats.npz'
         else:
-            raise NotImplementedError
-        metrics_dict = torch_fidelity.calculate_metrics(
-            input1=save_folder,
-            input2=None,
-            fid_statistics_file=fid_statistics_file,
-            cuda=True,
-            isc=True,
-            fid=True,
-            kid=False,
-            prc=False,
-            verbose=False,
-        )
-        fid = metrics_dict['frechet_inception_distance']
-        inception_score = metrics_dict['inception_score_mean']
-        postfix = "_cfg{}".format(args.cfg)
-        log_writer.add_scalar('fid{}'.format(postfix), fid, epoch)
-        log_writer.add_scalar('is{}'.format(postfix), inception_score, epoch)
-        print("FID: {:.4f}, Inception Score: {:.4f}".format(fid, inception_score))
-        if not args.evaluate_gen:
-            # remove temporal saving folder for online eval
-            shutil.rmtree(save_folder)
+            fid_statistics_file = None 
+
+        if fid_statistics_file is not None:
+            metrics_dict = torch_fidelity.calculate_metrics(
+                input1=save_folder,
+                input2=None,
+                fid_statistics_file=fid_statistics_file,
+                cuda=True,
+                isc=True,
+                fid=True,
+                kid=False,
+                prc=False,
+                verbose=False,
+            )
+            fid = metrics_dict['frechet_inception_distance']
+            inception_score = metrics_dict['inception_score_mean']
+            postfix = "_cfg{}".format(args.cfg)
+            log_writer.add_scalar('fid{}'.format(postfix), fid, epoch)
+            log_writer.add_scalar('is{}'.format(postfix), inception_score, epoch)
+            print("FID: {:.4f}, Inception Score: {:.4f}".format(fid, inception_score))
+        else:
+            print(f"FID file not prepared for img size of {args.img_size}")
+        
+        # if not args.evaluate_gen:
+        #     # remove temporal saving folder for online eval
+        #     shutil.rmtree(save_folder)
 
     torch.distributed.barrier()
     time.sleep(10)
