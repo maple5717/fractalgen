@@ -148,13 +148,13 @@ def main(args):
         # transforms.ToPILImage(),
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize to [-1, 1]
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # Normalize to [-1, 1]
     ])
     transform_val = transforms.Compose([
         # transforms.Lambda(lambda pil_image: center_crop_arr(pil_image, args.img_size)),
         # transforms.ToPILImage(),
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))  # Normalize to [-1, 1]
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])  # Normalize to [-1, 1]
     ])
 
     if not args.evaluate_gen:
